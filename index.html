@@ -3,11 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Document Analyzer</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Include jQuery and Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Include Bootstrap CSS and jQuery/Bootstrap JS (as shown above) -->
+
+    <style>
+        /* Additional CSS styles for your content */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        /* Custom styles for the container */
+        .container {
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        /* Custom styles for the result */
+        #result {
+            margin-top: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: left;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>This is a heading</h1>
-    <h2>this is h2</h2>
-    <h3>there will be a paragraph soon after</h3>
+    <div class="container">
+        <h1 class="text-center">Document Analyzer</h1>
+        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#uploadModal">
+            Upload a Document
+        </button>
+    </div>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalLabel">Upload a Document</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="file-upload-form" enctype="multipart/form-data">
+                        <input type="file" id="file-input" class="form-control-file" accept=".pdf,.doc,.docx">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="analyzeDocument()">Analyze Document</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result" class="container">
+        <!-- Results will be displayed here -->
+    </div>
+  
+<!-- Place this JavaScript code before the closing </body> tag in your HTML document -->
+
+
+<script>
+    function analyzeDocument() {
+        const fileInput = document.getElementById('file-input');
+        const resultDiv = document.getElementById('result');
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            resultDiv.innerHTML = '<p>Please select a file to analyze.</p>';
+            return;
+        }
+
+        const file = fileInput.files[0];
+
+        // You can implement the logic to handle the file upload and analysis here.
+        // This might involve sending the file to a server for processing using AJAX.
+
+        // For now, we'll simply display a message indicating that the analysis is in progress.
+        resultDiv.innerHTML = '<p>Analysis in progress...</p>';
+    }
+    function convertToText() {
+    const fileInput = document.getElementById('file-input');
+    const convertedText = document.getElementById('converted-text');
+
+    if (!fileInput.files || fileInput.files.length === 0) {
+        convertedText.textContent = 'Please select a PDF file to convert.';
+        return;
+    }
+
+    const file = fileInput.files[0];
+
+    // Make an AJAX request to the server-side script
+    const formData = new FormData();
+    formData.append('file', file);
+
+    fetch('/convert', {
+        method: 'POST',
+        body: formData,
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.error) {
+                convertedText.textContent = 'Error converting the PDF file.';
+                console.error(data.error);
+            } else {
+                convertedText.textContent = data.text;
+            }
+        })
+        .catch((error) => {
+            convertedText.textContent = 'Error converting the PDF file.';
+            console.error(error);
+        });
+}
+</script>
+
+    
 </body>
 </html>
